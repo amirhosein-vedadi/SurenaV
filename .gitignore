@@ -2,3 +2,4 @@
 /Surenaoffline_autogen/**
 Makefile
 cmake_install.cmake
+.vscode
