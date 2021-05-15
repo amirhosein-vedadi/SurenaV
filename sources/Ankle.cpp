@@ -1,10 +1,11 @@
 #include "headers/Ankle.h"
 
-Ankle::Ankle(double step_time, double ds_time, double alpha, short int num_step){
+Ankle::Ankle(double step_time, double ds_time, double height, double alpha, short int num_step){
     this->tStep_ = step_time;
     this->tDS_ = ds_time;
     this->alpha = alpha;
     this->stepCount = num_step;
+    this->height_ = height;
 }
 
 void Ankle::updateFoot(Vector3d foot_pose[]){
@@ -51,7 +52,7 @@ void Ankle::updateTrajectory(bool left_first){
                     rFoot_[index] = footPose_[step - 1];
                     index ++;
                 }
-                Vector3d* coefs = poly6Interpolate(footPose_[step-1],0.5*(footPose_[step-1]+footPose_[step+1]),footPose_[step+1],tStep_-tDS_);
+                Vector3d* coefs = ankle5Poly(footPose_[step-1],footPose_[step+1], height_,tStep_-tDS_);
                 for(double time = 0.0; time < tStep_ - tDS_; time += dt_){
                     lFoot_[index] = footPose_[step];
                     rFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5) + coefs[6] * pow(time,6);
@@ -70,7 +71,7 @@ void Ankle::updateTrajectory(bool left_first){
                     rFoot_[index] = footPose_[step];
                     index ++;
                 }
-                Vector3d* coefs = poly6Interpolate(footPose_[step-1],0.5*(footPose_[step-1]+footPose_[step+1]),footPose_[step+1],tStep_-tDS_);
+                Vector3d* coefs = ankle5Poly(footPose_[step-1],footPose_[step+1], height_,tStep_-tDS_);
                 for(double time = 0.0; time < tStep_ - tDS_; time += dt_){
                     rFoot_[index] = footPose_[step];
                     lFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5) + coefs[6] * pow(time,6);
@@ -94,7 +95,7 @@ void Ankle::updateTrajectory(bool left_first){
                     rFoot_[index] = footPose_[step - 1];
                     index ++;
                 }
-                Vector3d* coefs = poly6Interpolate(footPose_[step-1],0.5*(footPose_[step-1]+footPose_[step+1]),footPose_[step+1],tStep_-tDS_);
+                Vector3d* coefs = ankle5Poly(footPose_[step-1],footPose_[step+1], height_, tStep_-tDS_);
                 for(double time = 0.0; time < tStep_ - tDS_; time += dt_){
                     lFoot_[index] = footPose_[step];
                     rFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5) + coefs[6] * pow(time,6);
@@ -113,7 +114,7 @@ void Ankle::updateTrajectory(bool left_first){
                     rFoot_[index] = footPose_[step];
                     index ++;
                 }
-                Vector3d* coefs = poly6Interpolate(footPose_[step-1],0.5*(footPose_[step-1]+footPose_[step+1]),footPose_[step+1],tStep_-tDS_);
+                Vector3d* coefs = ankle5Poly(footPose_[step-1],footPose_[step+1],height_,tStep_-tDS_);
                 for(double time = 0.0; time < tStep_ - tDS_; time += dt_){
                     rFoot_[index] = footPose_[step];
                     lFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5) + coefs[6] * pow(time,6);

@@ -45,18 +45,9 @@ Robot::Robot(){
     joints_.push_back(lAnkleR);
 
     trajectoryPlanner_ = new DCMPlanner(0.6, 1.0, 0.3, 0.01, 6, 0.5);
+    anklePlanner_ = new Ankle(1.0, 0.3, 0.05,0.5,6);
 
-    cout << "Robot Object Has Been Created" << endl;
-}
-
-vector<double> Robot::spinOnline(VectorXd forceSensor, Vector3d gyro, Vector3d accelerometer, double time){
-    // TODO
-    // Add CoM Estimation
-    // Add DCM + CoM controllers
-}
-
-vector<double> Robot::spinOffline(){
-    /*
+    ////////////////////////////// create simple foot step plan /////////////////////////////////
     Vector3d* f = new Vector3d[6];
     
     f[0] << 0.0, -0.09, 0.0;
@@ -68,17 +59,43 @@ vector<double> Robot::spinOffline(){
     
     trajectoryPlanner_->setFoot(f);
     trajectoryPlanner_->getXiTrajectory();
-    trajectoryPlanner_->getXiDot();
-    Vector3d com(0.0,0.0,0.8);
-    trajectoryPlanner_->getCoM(com);
-    */
+    Vector3d com(0.0,0.0,0.713);
+    com_ = trajectoryPlanner_->getCoM(com);
+    
+    delete f;
+    f = new Vector3d[8];
+    f[0] << 0.0, 0.09, 0.0;
+    f[1] << 0.0, -0.09, 0.0;
+    f[2] << 0.4, 0.09, 0.0;
+    f[3] << 0.8, -0.09, 0.0;
+    f[4] << 1.2, 0.09, 0.0;
+    f[5] << 1.6, -0.09, 0.0;
+    f[6] << 2.0, 0.09, 0.0;
+    f[7] << 2.0, -0.09, 0.0;
+    anklePlanner_->updateFoot(f);
+    anklePlanner_->generateTrajectory();
+    lAnkle_ = anklePlanner_->getTrajectoryL();
+    rAnkle_ = anklePlanner_->getTrajectoryR();
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    cout << "Robot Object Has Been Created" << endl;
+}
+
+vector<double> Robot::spinOnline(VectorXd forceSensor, Vector3d gyro, Vector3d accelerometer, double time){
+    // TODO
+    // Add CoM Estimation
+    // Add DCM + CoM controllers
+}
+
+vector<double> Robot::spinOffline(int iter){
+
     MatrixXd lfoot(3,1);
     MatrixXd rfoot(3,1);
     Matrix3d attitude = MatrixXd::Identity(3,3);
     MatrixXd pelvis(3,1);
-    lfoot << 0.1, 0.05, 0.25;
-    rfoot << -0.1, -0.05, 0.25;
-    pelvis << 0.0, 0.0, 0.7135;
+    lfoot << lAnkle_[iter](0), lAnkle_[iter](1), lAnkle_[iter](2);
+    rfoot << rAnkle_[iter](0), rAnkle_[iter](1), rAnkle_[iter](2);
+    pelvis << com_[iter](0), com_[iter](1), com_[iter](2);
     doIK(pelvis,attitude,lfoot,attitude,rfoot,attitude);
 
     vector<double> config(29,0.0);

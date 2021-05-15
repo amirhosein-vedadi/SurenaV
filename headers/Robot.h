@@ -3,6 +3,7 @@
 #include "headers/DCM.h"
 #include "headers/Link.h"
 #include "headers/PID.h"
+#include "headers/Ankle.h"
 
 using namespace std;
 
@@ -12,11 +13,12 @@ class Robot{
         Robot();
 
         vector<double> spinOnline(VectorXd forceSensor, Vector3d gyro, Vector3d accelerometer, double time);
-        vector<double> spinOffline();
+        vector<double> spinOffline(int iter);
 
     private:
 
         DCMPlanner* trajectoryPlanner_;
+        Ankle* anklePlanner_;
 
         vector<_Link> joints_;
 
@@ -28,4 +30,8 @@ class Robot{
 
         Matrix3d Rroll(double phi);
         Matrix3d RPitch(double theta);
+
+        Vector3d* com_;
+        Vector3d* rAnkle_;
+        Vector3d* lAnkle_;
 };

@@ -6,6 +6,8 @@ set (sources
     sources/DCM.cpp
     sources/PID.cpp
     sources/Link.cpp
+    sources/MinJerk.cpp
+    sources/Ankle.cpp
 
 )
 set(headers
@@ -13,7 +15,8 @@ set(headers
     headers/DCM.h
     headers/PID.h
     headers/Link.h
-
+    headers/MinJerk.h
+    headers/Ankle.h
 )
 
 add_cnoid_simple_controller(Surenaoffline sources/main.cpp ${sources}  ${headers})

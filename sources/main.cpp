@@ -63,7 +63,7 @@ public:
         attitude = gyro->w();
 
         // Set Motor Angles
-        qref = surena->spinOffline();
+        qref = surena->spinOffline(simIterator_);
         //cout << qref[0] << " " << qref[1] << " " << qref[2] << " " << qref[3] << " " << qref[4] << " " << qref[5] << " " << endl;
         //cout << qref[13] << " " << qref[14] << " " << qref[15] << " " << qref[16] << " " << qref[17] << " " << qref[18] << " " << endl;
         // Send Motor Commands to Body
