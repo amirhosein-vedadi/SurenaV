@@ -6,6 +6,8 @@ set (sources
     sources/DCM.cpp
     sources/PID.cpp
     sources/Link.cpp
+    sources/Trajectory.cpp
+    sources/Ankle.cpp
 
 )
 set(headers
@@ -13,6 +15,8 @@ set(headers
     headers/DCM.h
     headers/PID.h
     headers/Link.h
+    headers/Trajectory.h
+    headers/Ankle.h
 
 )
 
