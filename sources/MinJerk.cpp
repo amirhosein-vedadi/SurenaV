@@ -13,7 +13,7 @@ Vector3d* MinJerk::cubicInterpolate(Vector3d theta_ini, Vector3d theta_f, Vector
     return coefs;
 }
 
-Vector3d* MinJerk::poly5Interpolate(Vector3d x_ini, Vector3d x_mid, Vector3d x_f, double tf){
+Vector3d* MinJerk::poly6Interpolate(Vector3d x_ini, Vector3d x_mid, Vector3d x_f, double tf){
     /* 
         This function fits a 5th order (C2) Polynomial to given given inputs
         Inputs : X0, Xmid, Xf   !Xd, Xdd at begining and end are assumed to be zero!
