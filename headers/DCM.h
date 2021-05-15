@@ -13,13 +13,15 @@
 #include "math.h"
 #include "cmath"
 
+#include "headers/MinJerk.h"
+
 using namespace Eigen;
 using namespace std;
 
 
 const double K_G = 9.81;
 
-class DCMPlanner{
+class DCMPlanner: private MinJerk{
     /*
         Three dimentional trajectory Generation Based on Divergant Component of Motion (DCM)
         Reference Paper:              https://ieeexplore.ieee.org/abstract/document/7063218/
