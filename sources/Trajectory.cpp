@@ -10,24 +10,23 @@ MatrixXd TrajectoryPlanner::cubicPoly(double* way_pts, double* vel_pts, double* 
         Returns Third Order Polynomial Trajectory (Position, Velocity & Acceleration) 
         with Respect to the Given Way Points
     */
-    const int dim = 1;
-    int length = 1/dt_*(time_pts[pts_count-1]-time_pts[0]);
+    int length = 1/dt_*(time_pts[pts_count]-time_pts[0]);
     
-    MatrixXd q(dim, length);
-    MatrixXd qd(dim, length);
-    MatrixXd qdd(dim, length);
+    MatrixXd q(1, length);
+    MatrixXd qd(1, length);
+    MatrixXd qdd(1, length);
 
     const short coef_dim = 4;
-    MatrixXd coef_mat((pts_count-1)*dim, coef_dim);
+    MatrixXd coef_mat(pts_count, coef_dim);
 
-    for(int i=0; i<(pts_count-1); i++){
+    for(int i=0; i<pts_count; i++){
         double final_time = time_pts[i+1] - time_pts[i];
         coef_mat.row(i) = Map <Matrix<double , 1, coef_dim>> (this->cubicCoefs(way_pts[i], way_pts[i+1], vel_pts[i], vel_pts[i+1], final_time));
     }
 
     for(int i=0; i<length; i++){
-        for(int j=0; j<(pts_count-1); j++){
-            double time = i * dt_;
+        double time = i * dt_;
+        for(int j=0; j<pts_count; j++){
             if (time < time_pts[j+1] && time >= time_pts[j]){
                 double local_time = time-time_pts[j];
                 q(i) = coef_mat(j, 0) + coef_mat(j, 1) * local_time + coef_mat(j, 2) * pow(local_time,2) + coef_mat(j, 3) * pow(local_time,3);
@@ -36,7 +35,7 @@ MatrixXd TrajectoryPlanner::cubicPoly(double* way_pts, double* vel_pts, double* 
             }
         }
     }
-    MatrixXd output(3 * dim, length);
+    MatrixXd output(3, length);
     output << q, qd, qdd;
     return output;
 }
