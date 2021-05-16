@@ -1,11 +1,14 @@
 #include "headers/Ankle.h"
 
-Ankle::Ankle(double step_time, double ds_time, double height, double alpha, short int num_step){
+Ankle::Ankle(double step_time, double ds_time, double height, double alpha, short int num_step, double dt){
     this->tStep_ = step_time;
     this->tDS_ = ds_time;
     this->alpha = alpha;
     this->stepCount = num_step;
     this->height_ = height;
+    this->dt_ = dt;
+
+    cout << "ankle Trajectory Planner initialized\n";
 }
 
 void Ankle::updateFoot(Vector3d foot_pose[]){
@@ -30,8 +33,7 @@ Vector3d* Ankle::getTrajectoryR(){
 }
 
 void Ankle::generateTrajectory(){
-    delete this->lFoot_;
-    delete this->rFoot_;
+
     lFoot_ = new Vector3d[int(stepCount * tStep_ / dt_)];
     rFoot_ = new Vector3d[int(stepCount * tStep_ / dt_)];
 
@@ -39,6 +41,12 @@ void Ankle::generateTrajectory(){
         updateTrajectory(true);
     else
         updateTrajectory(false);
+
+    ofstream file("log/ankle.csv");
+    for(int i = 0; i < int(stepCount * tStep_ / dt_); ++i){
+        file << lFoot_[i](0) << ","<< lFoot_[i](1) << ","<< lFoot_[i](2) << "," << rFoot_[i](0) << ","<< rFoot_[i](1) << ","<< rFoot_[i](2) << "\n"; 
+    }
+    file.close();
 }
 
 void Ankle::updateTrajectory(bool left_first){
@@ -55,7 +63,7 @@ void Ankle::updateTrajectory(bool left_first){
                 Vector3d* coefs = ankle5Poly(footPose_[step-1],footPose_[step+1], height_,tStep_-tDS_);
                 for(double time = 0.0; time < tStep_ - tDS_; time += dt_){
                     lFoot_[index] = footPose_[step];
-                    rFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5) + coefs[6] * pow(time,6);
+                    rFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5);
                     index ++;
                 }
                 delete coefs;
@@ -74,11 +82,11 @@ void Ankle::updateTrajectory(bool left_first){
                 Vector3d* coefs = ankle5Poly(footPose_[step-1],footPose_[step+1], height_,tStep_-tDS_);
                 for(double time = 0.0; time < tStep_ - tDS_; time += dt_){
                     rFoot_[index] = footPose_[step];
-                    lFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5) + coefs[6] * pow(time,6);
+                    lFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5);
                     index ++;
                 }
                 delete coefs;
-                for (double time = 0; time < (1 - alpha) * tDS_; time += dt_){
+                for (double time = 0; time < (alpha) * tDS_; time += dt_){
                     lFoot_[index] = footPose_[step + 1];
                     rFoot_[index] = footPose_[step];
                     index ++;
@@ -98,7 +106,7 @@ void Ankle::updateTrajectory(bool left_first){
                 Vector3d* coefs = ankle5Poly(footPose_[step-1],footPose_[step+1], height_, tStep_-tDS_);
                 for(double time = 0.0; time < tStep_ - tDS_; time += dt_){
                     lFoot_[index] = footPose_[step];
-                    rFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5) + coefs[6] * pow(time,6);
+                    rFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5);
                     index ++;
                 }
                 delete coefs;
@@ -117,11 +125,11 @@ void Ankle::updateTrajectory(bool left_first){
                 Vector3d* coefs = ankle5Poly(footPose_[step-1],footPose_[step+1],height_,tStep_-tDS_);
                 for(double time = 0.0; time < tStep_ - tDS_; time += dt_){
                     rFoot_[index] = footPose_[step];
-                    lFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5) + coefs[6] * pow(time,6);
+                    lFoot_[index] = coefs[0] + coefs[1] * time + coefs[2] * pow(time,2) + coefs[3] * pow(time,3) + coefs[4] * pow(time,4) + coefs[5] * pow(time,5);
                     index ++;
                 }
                 delete coefs;
-                for (double time = 0; time < (1 - alpha) * tDS_; time += dt_){
+                for (double time = 0; time < (alpha) * tDS_; time += dt_){
                     lFoot_[index] = footPose_[step + 1];
                     rFoot_[index] = footPose_[step];
                     index ++;

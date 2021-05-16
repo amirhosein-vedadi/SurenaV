@@ -4,7 +4,7 @@
 
 class Ankle: private MinJerk{
     public:
-        Ankle(double step_time, double ds_time, double height, double alpha, short int num_step);
+        Ankle(double step_time, double ds_time, double height, double alpha, short int num_step, double dt);
         void updateFoot(Vector3d foot_pose[]);
         void generateTrajectory(); 
         Vector3d* getTrajectoryL();

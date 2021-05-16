@@ -5,6 +5,8 @@
 #include "headers/PID.h"
 #include "headers/Ankle.h"
 
+#include "fstream"
+
 using namespace std;
 
 class Robot{

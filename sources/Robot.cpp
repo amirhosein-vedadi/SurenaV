@@ -45,7 +45,7 @@ Robot::Robot(){
     joints_.push_back(lAnkleR);
 
     trajectoryPlanner_ = new DCMPlanner(0.6, 1.0, 0.3, 0.01, 6, 0.5);
-    anklePlanner_ = new Ankle(1.0, 0.3, 0.05,0.5,6);
+    anklePlanner_ = new Ankle(1.0, 0.3, 0.05,0.5,6,0.01);
 
     ////////////////////////////// create simple foot step plan /////////////////////////////////
     Vector3d* f = new Vector3d[6];
@@ -63,22 +63,23 @@ Robot::Robot(){
     com_ = trajectoryPlanner_->getCoM(com);
     
     delete f;
-    f = new Vector3d[8];
-    f[0] << 0.0, 0.09, 0.0;
-    f[1] << 0.0, -0.09, 0.0;
-    f[2] << 0.4, 0.09, 0.0;
-    f[3] << 0.8, -0.09, 0.0;
-    f[4] << 1.2, 0.09, 0.0;
-    f[5] << 1.6, -0.09, 0.0;
-    f[6] << 2.0, 0.09, 0.0;
-    f[7] << 2.0, -0.09, 0.0;
-    anklePlanner_->updateFoot(f);
+    Vector3d* f2 = new Vector3d[8];
+    f2[0] << 0.0, 0.09, 0.0;
+    f2[1] << 0.0, -0.09, 0.0;
+    f2[2] << 0.4, 0.09, 0.0;
+    f2[3] << 0.8, -0.09, 0.0;
+    f2[4] << 1.2, 0.09, 0.0;
+    f2[5] << 1.6, -0.09, 0.0;
+    f2[6] << 2.0, 0.09, 0.0;
+    f2[7] << 2.0, -0.09, 0.0;
+    anklePlanner_->updateFoot(f2);
     anklePlanner_->generateTrajectory();
     lAnkle_ = anklePlanner_->getTrajectoryL();
     rAnkle_ = anklePlanner_->getTrajectoryR();
+    delete f2;
     /////////////////////////////////////////////////////////////////////////////////////////////
 
-    cout << "Robot Object Has Been Created" << endl;
+    cout << "Robot Object has been Created" << endl;
 }
 
 vector<double> Robot::spinOnline(VectorXd forceSensor, Vector3d gyro, Vector3d accelerometer, double time){
