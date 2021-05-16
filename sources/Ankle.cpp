@@ -25,11 +25,11 @@ void Ankle::updateFoot(Vector3d foot_pose[]){
 }
 
 Vector3d* Ankle::getTrajectoryL(){
-    return rFoot_;
+    return lFoot_;
 }
 
 Vector3d* Ankle::getTrajectoryR(){
-    return lFoot_;
+    return rFoot_;
 }
 
 void Ankle::generateTrajectory(){
@@ -53,7 +53,7 @@ void Ankle::updateTrajectory(bool left_first){
     int index = 0;
 
     if (left_first){
-        for (int step = 1; step < num_step + 1 ; step ++){
+        for (int step = 1; step < stepCount + 1 ; step ++){
             if (step % 2 == 0){     // Left is support, Right swings
                 for (double time = 0; time < (1 - alpha) * tDS_; time += dt_){
                     lFoot_[index] = footPose_[step];
