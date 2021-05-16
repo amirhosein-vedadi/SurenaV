@@ -44,8 +44,8 @@ Robot::Robot(){
     joints_.push_back(lAnkleP);
     joints_.push_back(lAnkleR);
 
-    trajectoryPlanner_ = new DCMPlanner(0.6, 1.0, 0.3, 0.01, 6, 0.5);
-    anklePlanner_ = new Ankle(1.0, 0.3, 0.05,0.5,6,0.01);
+    trajectoryPlanner_ = new DCMPlanner(0.6, 1.0, 0.3, 0.001, 6, 0.5);
+    anklePlanner_ = new Ankle(1.0, 0.3, 0.05,0.5,6,0.001);
 
     ////////////////////////////// create simple foot step plan /////////////////////////////////
     Vector3d* f = new Vector3d[6];
@@ -154,11 +154,11 @@ double* Robot::geometricIK(MatrixXd p1, MatrixXd r1, MatrixXd p7, MatrixXd r7, b
     double* q = new double[6];  
     MatrixXd D(3,1);
     if (isLeft)
-        D << 0.0,0.0,0.0;
-        //D << 0.0,-joints_[0].length_,0.0;
+        //D << 0.0,0.09,0.0;
+        D << 0.0,joints_[0].length_,0.0;
     else
-        D << 0.0,0.0,0.0;
-        //D << 0.0,joints_[0].length_,0.0;
+        //D << 0.0,-0.09,0.0;
+        D << 0.0,-joints_[0].length_,0.0;
     MatrixXd r = r7.transpose() * (p1 + r1 * D + r1 * e - p7);
     double C = r.norm();
     double c3 = (pow(C,2) - pow(a,2) - pow(b,2))/(2 * a * b);
